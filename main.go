@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 
@@ -9,11 +10,14 @@ import (
 )
 
 func main() {
-	cfg := config.NewConfig()
+	confFile := flag.String("conf", "local.toml", "設定ファイルの名前")
+	flag.Parse()
 
-	router := router.NewRouter(cfg)
+	cfg := config.NewConfig(*confFile)
 
-	if err := router.Run(fmt.Sprintf(":%s", cfg.BaseConfig.Port)); err != nil {
+	r := router.NewRouter(cfg)
+
+	if err := r.Run(fmt.Sprintf(":%s", cfg.BaseConfig.Port)); err != nil {
 		log.Fatal("Server Run Failed.: ", err)
 	}
 }
