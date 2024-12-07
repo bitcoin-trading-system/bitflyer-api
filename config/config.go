@@ -5,11 +5,18 @@ import (
 )
 
 type Config struct {
-	BaseConfig BaseConfig `toml:"baseConfig"`
+	BaseConfig     BaseConfig     `toml:"baseConfig"`
+	BitflyerConfig BitFlyerConfig `toml:"bitFlyerConfig"`
 }
 
 type BaseConfig struct {
 	Port string `toml:"port"`
+}
+
+type BitFlyerConfig struct {
+	ApiKey       string `toml:"apiKey"`
+	ApiSecret    string `toml:"apiSecret"`
+	BaseEndPoint string `toml:"baseEndPoint"`
 }
 
 func NewConfig() Config {
