@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+
 	"github.com/BurntSushi/toml"
 )
 
@@ -19,10 +21,10 @@ type BitFlyerConfig struct {
 	BaseEndPoint string `toml:"baseEndPoint"`
 }
 
-func NewConfig() Config {
+func NewConfig(fileName string) Config {
 	var config Config
 
-	if _, err := toml.DecodeFile("conf/local.toml", &config); err != nil {
+	if _, err := toml.DecodeFile(fmt.Sprintf("conf/%s", fileName), &config); err != nil {
 		panic(err)
 	}
 
