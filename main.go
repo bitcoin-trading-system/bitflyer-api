@@ -3,25 +3,17 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/bitcoin-trading-system/bitflyer-api/config"
-	"github.com/gin-gonic/gin"
+	"github.com/bitcoin-trading-system/bitflyer-api/router"
 )
 
 func main() {
 	cfg := config.NewConfig()
 
-	router := gin.Default()
+	router := router.NewRouter(cfg)
 
-	router.GET("/healthcheck", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "healthcheck ok!",
-		})
-	})
-
-	err := router.Run(fmt.Sprintf(":%s", cfg.BaseConfig.Port))
-	if err != nil {
+	if err := router.Run(fmt.Sprintf(":%s", cfg.BaseConfig.Port)); err != nil {
 		log.Fatal("Server Run Failed.: ", err)
 	}
 }
