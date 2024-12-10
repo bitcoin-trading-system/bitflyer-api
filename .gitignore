@@ -29,3 +29,5 @@ go.work.sum
 
 # toml file
 *.toml
+
+main
