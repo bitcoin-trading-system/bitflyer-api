@@ -23,11 +23,11 @@ func setUpHandler(r *gin.Engine, h handler.IHandler) *gin.Engine {
 		})
 	})
 
-	r.GET("/board/:product_code", h.GetBoard)
-	r.GET("/ticker/:product_code", h.GetTicker)
-	r.GET("/executions/:product_code", h.GetExecutions)
-	r.GET("/board_state/:product_code", h.GetBoardState)
-	r.GET("/health/:product_code", h.GetHealth)
+	r.GET("/board/", h.GetBoard)
+	r.GET("/ticker/", h.GetTicker)
+	r.GET("/executions/", h.GetExecutions)
+	r.GET("/board_state/", h.GetBoardState)
+	r.GET("/health/", h.GetHealth)
 
 	return r
 }
