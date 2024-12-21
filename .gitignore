@@ -24,9 +24,6 @@ go.work.sum
 # GoLand project files
 .idea/
 
-# VSCode project files
-.vscode/
-
 # toml file
 *.toml
 
