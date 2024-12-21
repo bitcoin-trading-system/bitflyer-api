@@ -10,7 +10,7 @@ import (
 type PublicAPI interface {
 	GetBoard(productCode string) (models.Board, error)
 	GetTicker(productCode string) (models.Ticket, error)
-	GetExecutions(productCode string, count, before, after int) ([]models.Execution, error)
+	GetExecutions(productCode string, count, before, after string) ([]models.Execution, error)
 	GetBoardState(productCode string) (models.BoardStatus, error)
 	GetHealth(productCode string) (models.Health, error)
 }
@@ -48,7 +48,7 @@ func (api API) GetTicker(productCode string) (models.Ticket, error) {
 	return resModel, nil
 }
 
-func (api API) GetExecutions(productCode string, count, before, after int) ([]models.Execution, error) {
+func (api API) GetExecutions(productCode, count, before, after string) ([]models.Execution, error) {
 	url, err := api.BaseUrl.GetExecutionsUrl(productCode, count, before, after)
 	if err != nil {
 		return []models.Execution{}, err

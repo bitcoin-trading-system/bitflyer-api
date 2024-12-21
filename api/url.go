@@ -7,28 +7,54 @@ import (
 )
 
 func (bu BaseUrl) GetBoardUrl(productCode string) (string, error) {
-	return createUrl(string(bu), "/v1/board", url.Values{"product_code": {productCode}})
+	qVal := url.Values{}
+	if productCode != "" {
+		qVal.Add("product_code", productCode)
+	}
+	return createUrl(string(bu), "/v1/board", qVal)
 }
 
 func (bu BaseUrl) GetTickerUrl(productCode string) (string, error) {
-	return createUrl(string(bu), "/v1/ticker", url.Values{"product_code": {productCode}})
+	qVal := url.Values{}
+	if productCode != "" {
+		qVal.Add("product_code", productCode)
+	}
+
+	return createUrl(string(bu), "/v1/ticker", qVal)
 }
 
-func (bu BaseUrl) GetExecutionsUrl(productCode string, count, before, after int) (string, error) {
-	return createUrl(string(bu), "/v1/executions", url.Values{
-		"product_code": {productCode},
-		"count":        {string(rune(count))},
-		"before":       {string(rune(before))},
-		"after":        {string(rune(after))},
-	})
+func (bu BaseUrl) GetExecutionsUrl(productCode, count, before, after string) (string, error) {
+	qVal := url.Values{}
+	if productCode != "" {
+		qVal.Add("product_code", productCode)
+	}
+	if count != "" {
+		qVal.Add("count", count)
+	}
+	if before != "" {
+		qVal.Add("before", before)
+	}
+	if after != "" {
+		qVal.Add("after", after)
+	}
+
+	return createUrl(string(bu), "/v1/executions", qVal)
 }
 
 func (bu BaseUrl) GetBoardStateUrl(productCode string) (string, error) {
-	return createUrl(string(bu), "/v1/getboardstate", url.Values{"product_code": {productCode}})
+	qVal := url.Values{}
+	if productCode != "" {
+		qVal.Add("product_code", productCode)
+	}
+	return createUrl(string(bu), "/v1/getboardstate", qVal)
 }
 
 func (bu BaseUrl) GetHealthUrl(productCode string) (string, error) {
-	return createUrl(string(bu), "/v1/gethealth", url.Values{"product_code": {productCode}})
+	qVal := url.Values{}
+	if productCode != "" {
+		qVal.Add("product_code", productCode)
+	}
+	return createUrl(string(bu), "/v1/gethealth", qVal)
 }
 
 func createUrl(baseUrl, p string, qVal url.Values, el ...string) (string, error) {
