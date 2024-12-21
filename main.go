@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	comlFilePath := flag.String("conf", "local.toml", "設定ファイルの名前")
+	comlFilePath := flag.String("conf", "conf/local.toml", "設定ファイルの名前")
 	flag.Parse()
 
 	cfg := config.NewConfig(*comlFilePath)
