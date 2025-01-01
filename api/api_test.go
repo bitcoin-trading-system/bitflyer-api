@@ -8,5 +8,5 @@ import (
 var APITestConfig config.Config
 
 func init() {
-	APITestConfig = config.NewConfig("../conf/local.toml")
+	APITestConfig = config.NewConfig("../conf/local.toml", "../env/.env.local")
 }
