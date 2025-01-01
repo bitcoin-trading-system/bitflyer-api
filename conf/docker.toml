@@ -1,0 +1,5 @@
+[baseConfig]
+port = "7001"
+
+[bitFlyerConfig]
+baseEndPoint = "https://api.bitflyer.com"
