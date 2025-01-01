@@ -24,7 +24,4 @@ go.work.sum
 # GoLand project files
 .idea/
 
-# toml file
-*.toml
-
 main
