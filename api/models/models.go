@@ -50,3 +50,48 @@ type BoardStatus struct {
 type Health struct {
 	Status string `json:"status"`
 }
+
+type Balance struct {
+	CurrencyCode string  `json:"currency_code"`
+	Amount       float64 `json:"amount"`
+	Available    float64 `json:"available"`
+}
+
+type Collateral struct {
+	Collateral        float64 `json:"collateral"`
+	OpenPositionPnl   float64 `json:"open_position_pnl"`
+	RequireCollateral float64     `json:"require_collateral"`
+	KeepRate          float64 `json:"keep_rate"`
+	MarginCallAmount  float64     `json:"margin_call_amount"`
+	MarginCallDueDate string  `json:"margin_call_due_date"`
+}
+
+type CoinIns struct {
+	ID           int     `json:"id"`
+	OrderID      string  `json:"order_id"`
+	CurrencyCode string  `json:"currency_code"`
+	Amount       float64 `json:"amount"`
+	Address      string  `json:"address"`
+	TxHash       string  `json:"tx_hash"`
+	Status       string  `json:"status"`
+	EventDate    string  `json:"event_date"`
+}
+
+type ChildOrder struct {
+	ChildOrderAcceptanceID string `json:"child_order_acceptance_id"`
+}
+
+type SendChildOrderRequest struct {
+	ProductCode    string  `json:"product_code"`
+	ChildOrderType string  `json:"child_order_type"`
+	Side           string  `json:"side"`
+	Price          int     `json:"price"`
+	Size           float64 `json:"size"`
+	MinuteToExpire int     `json:"minute_to_expire"`
+	TimeInForce    string  `json:"time_in_force"`
+}
+
+type CancelChildOrderRequest struct {
+	ProductCode  string `json:"product_code"`
+	ChildOrderID string `json:"child_order_id"`
+}

@@ -10,10 +10,11 @@ import (
 )
 
 func main() {
-	comlFilePath := flag.String("conf", "conf/local.toml", "設定ファイルの名前")
+	tomlFilePath := flag.String("conf", "conf/local.toml", "tomlファイルの名前")
+	envFilePath := flag.String("env", "env/.env.local", "envファイルのパス")
 	flag.Parse()
 
-	cfg := config.NewConfig(*comlFilePath)
+	cfg := config.NewConfig(*tomlFilePath, *envFilePath)
 
 	r := router.NewRouter(cfg)
 
