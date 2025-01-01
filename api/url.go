@@ -57,6 +57,26 @@ func (bu BaseUrl) GetHealthUrl(productCode string) (string, error) {
 	return createUrl(string(bu), "/v1/gethealth", qVal)
 }
 
+func (bu BaseUrl) GetBalanceUrl() (string, error) {
+	return createUrl(string(bu), "/v1/me/getbalance", url.Values{})
+}
+
+func (bu BaseUrl) GetCollateralUrl() (string, error) {
+	return createUrl(string(bu), "/v1/me/getcollateral", url.Values{})
+}
+
+func (bu BaseUrl) PostSendChildOrderUrl() (string, error) {
+	return createUrl(string(bu), "/v1/me/sendchildorder", url.Values{})
+}
+
+func (bu BaseUrl) PostCancelChildOrderUrl() (string, error) {
+	return createUrl(string(bu), "/v1/me/cancelchildorder", url.Values{})
+}
+
+func (bu BaseUrl) GetChildOrdersUrl() (string, error) {
+	return createUrl(string(bu), "/v1/me/getchildorders", url.Values{})
+}
+
 func createUrl(baseUrl, p string, qVal url.Values, el ...string) (string, error) {
 	u, err := url.Parse(baseUrl)
 	if err != nil {
@@ -76,4 +96,12 @@ func withSuffixSlash(s string) string {
 		return s
 	}
 	return s + "/"
+}
+
+func extractPath(u string) (string, error) {
+	uObj, err := url.Parse(u)
+	if err != nil {
+		return "", err
+	}
+	return uObj.Path, nil
 }

@@ -1,7 +1,5 @@
 package usecase
 
-// TODO modelsをmock化したい
-
 import (
 	"testing"
 
@@ -263,6 +261,302 @@ func TestBitflyerUseCase_GetHealth(t *testing.T) {
 			if (err != nil) != tt.wantErr {
 				t.Errorf("BitflyerUseCase.GetHealth() error = %v, wantErr %v", err, tt.wantErr)
 				return
+			}
+		})
+	}
+}
+
+func TestBitflyerUseCase_GetBalance(t *testing.T) {
+	tests := []struct {
+		name    string
+		wantErr bool
+	}{
+		{
+			name:    "TestBitflyerUseCase_GetBalance",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			bu := NewBitflyerUseCase(UseCaseTestConfig)
+			got, err := bu.GetBalance()
+			if err != nil {
+				if !tt.wantErr {
+					t.Errorf("BitflyerUseCase.GetBalance() error = %v, wantErr %v", err, tt.wantErr)
+				}
+				return
+			}
+			if len(got) == 0 {
+				t.Errorf("BitflyerUseCase.GetBalance() = %v, want not empty", got)
+			}
+		})
+	}
+}
+
+func TestBitflyerUseCase_GetCollateral(t *testing.T) {
+	tests := []struct {
+		name    string
+		wantErr bool
+	}{
+		{
+			name:    "TestBitflyerUseCase_GetCollateral",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			bu := NewBitflyerUseCase(UseCaseTestConfig)
+			_, err := bu.GetCollateral()
+			if err != nil {
+				if !tt.wantErr {
+					t.Errorf("BitflyerUseCase.GetCollateral() error = %v, wantErr %v", err, tt.wantErr)
+				}
+				return
+			}
+		})
+	}
+}
+
+func TestBitflyerUseCase_PostSendChildOrder(t *testing.T) {
+	type args struct {
+		productCode    string
+		ChildOrderType string
+		side           string
+		price          int
+		size           float64
+		MinuteToExpire int
+		TimeInForce    string
+		isDry          bool
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "TestBitflyerUseCase_PostSendChildOrder",
+			args: args{
+				productCode:    ProductCodeBTCJPY,
+				ChildOrderType: "LIMIT",
+				side:           "BUY",
+				price:          1000000,
+				size:           0.01,
+				MinuteToExpire: 1,
+				TimeInForce:    "GTC",
+				isDry:          true,
+			},
+			wantErr: false,
+		},
+		{
+			name: "TestBitflyerUseCase_PostSendChildOrder_No_Product_Code",
+			args: args{
+				productCode:    "",
+				ChildOrderType: "LIMIT",
+				side:           "BUY",
+				price:          1000000,
+				size:           0.01,
+				MinuteToExpire: 1,
+				TimeInForce:    "GTC",
+				isDry:          true,
+			},
+			wantErr: false,
+		},
+		{
+			name: "TestBitflyerUseCase_PostSendChildOrder_Invalid_Product_Code",
+			args: args{
+				productCode:    "INVALID",
+				ChildOrderType: "LIMIT",
+				side:           "BUY",
+				price:          1000000,
+				size:           0.01,
+				MinuteToExpire: 1,
+				TimeInForce:    "GTC",
+				isDry:          true,
+			},
+			wantErr: true,
+		},
+		{
+			name: "TestBitflyerUseCase_PostSendChildOrder_No_ChildOrderType",
+			args: args{
+				productCode:    ProductCodeBTCJPY,
+				ChildOrderType: "",
+				side:           "BUY",
+				price:          1000000,
+				size:           0.01,
+				MinuteToExpire: 1,
+				TimeInForce:    "GTC",
+				isDry:          true,
+			},
+			wantErr: true,
+		},
+		{
+			name: "TestBitflyerUseCase_PostSendChildOrder_No_Side",
+			args: args{
+				productCode:    ProductCodeBTCJPY,
+				ChildOrderType: "LIMIT",
+				side:           "",
+				price:          1000000,
+				size:           0.01,
+				MinuteToExpire: 1,
+				TimeInForce:    "GTC",
+				isDry:          true,
+			},
+			wantErr: true,
+		},
+		{
+			name: "TestBitflyerUseCase_PostSendChildOrder_No_TimeInForce",
+			args: args{
+				productCode:    ProductCodeBTCJPY,
+				ChildOrderType: "LIMIT",
+				side:           "BUY",
+				price:          1000000,
+				size:           0.01,
+				MinuteToExpire: 1,
+				TimeInForce:    "",
+				isDry:          true,
+			},
+			wantErr: true,
+		},
+		{
+			name: "TestBitflyerUseCase_PostSendChildOrder_Invalid_TimeInForce",
+			args: args{
+				productCode:    ProductCodeBTCJPY,
+				ChildOrderType: "LIMIT",
+				side:           "BUY",
+				price:          1000000,
+				size:           0.01,
+				MinuteToExpire: 1,
+				TimeInForce:    "INVALID",
+				isDry:          true,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			bu := NewBitflyerUseCase(UseCaseTestConfig)
+			_, err := bu.PostSendChildOrder(tt.args.productCode, tt.args.ChildOrderType, tt.args.side, tt.args.price, tt.args.size, tt.args.MinuteToExpire, tt.args.TimeInForce, tt.args.isDry)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("BitflyerUseCase.PostSendChildOrder() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+		})
+	}
+}
+
+func TestBitflyerUseCase_PostCancelChildOrder(t *testing.T) {
+	type args struct {
+		productCode  string
+		ChildOrderID string
+		isDry        bool
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "TestBitflyerUseCase_PostCancelChildOrder",
+			args: args{
+				productCode:  ProductCodeBTCJPY,
+				ChildOrderID: "30", // テキトウな値
+				isDry:        true,
+			},
+			wantErr: false,
+		},
+		{
+			name: "TestBitflyerUseCase_PostCancelChildOrder_No_Product_Code",
+			args: args{
+				productCode:  "",
+				ChildOrderID: "30", // テキトウな値
+				isDry:        true,
+			},
+			wantErr: false,
+		},
+		{
+			name: "TestBitflyerUseCase_PostCancelChildOrder_Invalid_Product_Code",
+			args: args{
+				productCode:  "INVALID",
+				ChildOrderID: "30", // テキトウな値
+				isDry:        true,
+			},
+			wantErr: true,
+		},
+		{
+			name: "TestBitflyerUseCase_PostCancelChildOrder_No_ChildOrderID",
+			args: args{
+				productCode:  ProductCodeBTCJPY,
+				ChildOrderID: "",
+				isDry:        true,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			bu := NewBitflyerUseCase(UseCaseTestConfig)
+			if err := bu.PostCancelChildOrder(tt.args.productCode, tt.args.ChildOrderID, tt.args.isDry); (err != nil) != tt.wantErr {
+				t.Errorf("BitflyerUseCase.PostCancelChildOrder() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestBitflyerUseCase_GetChildOrders(t *testing.T) {
+	tests := []struct {
+		name    string
+		wantErr bool
+	}{
+		{
+			name:    "TestBitflyerUseCase_GetChildOrders",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			bu := NewBitflyerUseCase(UseCaseTestConfig)
+			got, err := bu.GetChildOrders()
+			if err != nil {
+				if !tt.wantErr {
+					t.Errorf("BitflyerUseCase.GetChildOrders() error = %v, wantErr %v", err, tt.wantErr)
+				}
+				return
+			}
+			if len(got) == 0 {
+				t.Errorf("BitflyerUseCase.GetChildOrders() = %v, want not empty", got)
+			}
+		})
+	}
+}
+
+func Test_validateProductCode(t *testing.T) {
+	type args struct {
+		productCode string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "Test_validateProductCode",
+			args: args{
+				productCode: ProductCodeBTCJPY,
+			},
+			want: true,
+		},
+		{
+			name: "Test_validateProductCode_Invalid",
+			args: args{
+				productCode: "INVALID",
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := validateProductCode(tt.args.productCode); got != tt.want {
+				t.Errorf("validateProductCode() = %v, want %v", got, tt.want)
 			}
 		})
 	}

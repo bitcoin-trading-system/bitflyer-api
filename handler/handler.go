@@ -15,11 +15,19 @@ type Handler struct {
 }
 
 type IHandler interface {
+	// Public API
 	GetBoard(ctx *gin.Context)
 	GetTicker(ctx *gin.Context)
 	GetExecutions(ctx *gin.Context)
 	GetBoardState(ctx *gin.Context)
 	GetHealth(ctx *gin.Context)
+
+	// Private API
+	GetBalance(ctx *gin.Context)
+	GetCollateral(ctx *gin.Context)
+	PostSendChildOrder(ctx *gin.Context)
+	PostCancelChildOrder(ctx *gin.Context)
+	GetChildOrders(ctx *gin.Context)
 }
 
 func NewHandler(cfg config.Config) IHandler {
@@ -92,4 +100,90 @@ func (h *Handler) GetHealth(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, health)
+}
+
+func (h *Handler) GetBalance(ctx *gin.Context) {
+	balance, err := h.UseCase.GetBalance()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, balance)
+}
+
+func (h *Handler) GetCollateral(ctx *gin.Context) {
+	collateral, err := h.UseCase.GetCollateral()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, collateral)
+}
+
+func (h *Handler) PostSendChildOrder(ctx *gin.Context) {
+	req, err := NewPostSendChildOrderRequestBody(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	isDry := ctx.Request.URL.Query().Get("dry_run") == "1"
+	childOrder, err := h.UseCase.PostSendChildOrder(req.ProductCode, req.ChildOrderType, req.Side, req.Price, req.Size, req.MinuteToExpire, req.TimeInForce, isDry)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, childOrder)
+}
+
+type PostSendChildOrderRequestBody struct {
+	ProductCode    string  `json:"product_code"`
+	ChildOrderType string  `json:"child_order_type"`
+	Side           string  `json:"side"`
+	Price          int     `json:"price"`
+	Size           float64 `json:"size"`
+	MinuteToExpire int     `json:"minute_to_expire"`
+	TimeInForce    string  `json:"time_in_force"`
+}
+
+func NewPostSendChildOrderRequestBody(ctx *gin.Context) (PostSendChildOrderRequestBody, error) {
+	var req PostSendChildOrderRequestBody
+	err := ctx.BindJSON(&req)
+	return req, err
+}
+
+func (h *Handler) PostCancelChildOrder(ctx *gin.Context) {
+	req, err := NewCancelChildOrderRequestBody(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	isDry := ctx.Request.URL.Query().Get("dry_run") == "1"
+	err = h.UseCase.PostCancelChildOrder(req.ProductCode, req.ChildOrderID, isDry)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "success"})
+}
+
+type CancelChildOrderRequestBody struct {
+	ProductCode  string `json:"product_code"`
+	ChildOrderID string `json:"child_order_id"`
+}
+
+func NewCancelChildOrderRequestBody(ctx *gin.Context) (CancelChildOrderRequestBody, error) {
+	var req CancelChildOrderRequestBody
+	err := ctx.BindJSON(&req)
+	return req, err
+}
+
+func (h *Handler) GetChildOrders(ctx *gin.Context) {
+	childOrders, err := h.UseCase.GetChildOrders()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, childOrders)
 }

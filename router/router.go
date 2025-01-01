@@ -23,11 +23,19 @@ func setUpHandler(r *gin.Engine, h handler.IHandler) *gin.Engine {
 		})
 	})
 
+	// public API
 	r.GET("/board/", h.GetBoard)
 	r.GET("/ticker/", h.GetTicker)
 	r.GET("/executions/", h.GetExecutions)
 	r.GET("/board_state/", h.GetBoardState)
 	r.GET("/health/", h.GetHealth)
+
+	// private API
+	r.GET("/getbalance/", h.GetBalance)
+	r.GET("/getcollateral/", h.GetCollateral)
+	r.POST("/sendchildorder/", h.PostSendChildOrder)
+	r.POST("/cancelchildorder/", h.PostCancelChildOrder)
+	r.GET("/getchildorders/", h.GetChildOrders)
 
 	return r
 }
