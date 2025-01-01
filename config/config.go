@@ -1,9 +1,11 @@
 package config
 
 import (
+	"errors"
+	"os"
+
 	"github.com/BurntSushi/toml"
 	"github.com/joho/godotenv"
-	"os"
 )
 
 type Config struct {
@@ -35,5 +37,26 @@ func NewConfig(tomlFilePath, envFilePath string) Config {
 	config.BitflyerConfig.ApiKey = os.Getenv("API_KEY")
 	config.BitflyerConfig.ApiSecret = os.Getenv("API_SECRET")
 
+	if err := config.mustCheck(); err != nil {
+		panic(err)
+	}
+
 	return config
+}
+
+func (cfg Config) mustCheck() error {
+	if cfg.BaseConfig.Port == "" {
+		return errors.New("port is empty")
+	}
+	if cfg.BitflyerConfig.ApiKey == "" {
+		return errors.New("apiKey is empty")
+	}
+	if cfg.BitflyerConfig.ApiSecret == "" {
+		return errors.New("apiSecret is empty")
+	}
+	if cfg.BitflyerConfig.BaseEndPoint == "" {
+		return errors.New("baseEndPoint is empty")
+	}
+	return nil
+
 }
