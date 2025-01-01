@@ -12,7 +12,7 @@ import (
 var UseCaseTestConfig config.Config
 
 func init() {
-	UseCaseTestConfig = config.NewConfig("../conf/local.toml")
+	UseCaseTestConfig = config.NewConfig("../conf/local.toml", "../env/.env.local")
 }
 
 func TestBitflyerUseCase_GetBoard(t *testing.T) {
