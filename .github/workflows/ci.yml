@@ -26,9 +26,9 @@ jobs:
           touch env/.env.local
           echo "API_KEY=${{ secrets.API_KEY }}" > env/.env.local
           echo "API_SECRET=${{ secrets.API_SECRET }}" > env/.env.local
+
       - name: Build the Go application
         run: go build .
 
-      # TODO クレデンシャルの情報がないので現状は実行できない。github actionsではクレデンシャルを別ルートで読み込ませる必要がある
-      # - name: Run Go tests
-      #   run: go test ./... -v
+      - name: Run Go tests
+        run: go test ./... -v
