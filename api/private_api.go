@@ -2,8 +2,8 @@ package api
 
 import (
 	"net/http"
-	"time"
 	"strconv"
+	"time"
 
 	"github.com/bitcoin-trading-system/bitflyer-api/api/models"
 	"github.com/bitcoin-trading-system/bitflyer-api/config"

@@ -21,7 +21,7 @@ type API struct {
 	ApiSecret string
 }
 
-func (api API) do(method string, reqModel any, resModel any, url string, headers map[string]string, isPrivate bool) error {
+func (api API) do(method string, reqModel, resModel any, url string, headers map[string]string, isPrivate bool) error {
 	reqJson, err := MarshalJson(reqModel)
 	if err != nil {
 		return err

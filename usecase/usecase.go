@@ -83,7 +83,7 @@ func (bu *BitflyerUseCase) GetTicker(productCode string) (models.Ticket, error) 
 	return bu.PublicAPI.GetTicker(productCode)
 }
 
-func (bu *BitflyerUseCase) GetExecutions(productCode string, count, before, after string) ([]models.Execution, error) {
+func (bu *BitflyerUseCase) GetExecutions(productCode, count, before, after string) ([]models.Execution, error) {
 	if productCode == "" {
 		productCode = ProductCodeBTCJPY
 	}
@@ -126,7 +126,7 @@ func (bu *BitflyerUseCase) GetCollateral() (models.Collateral, error) {
 	return bu.PrivateAPI.GetCollateral()
 }
 
-func (bu *BitflyerUseCase) PostSendChildOrder(productCode, ChildOrderType, side string, price int, size float64, MinuteToExpire int, TimeInForce string, isDry bool) (models.ChildOrder, error) {
+func (bu *BitflyerUseCase) PostSendChildOrder(productCode, childOrderType, side string, price int, size float64, minuteToExpire int, timeInForce string, isDry bool) (models.ChildOrder, error) {
 	if productCode == "" {
 		productCode = ProductCodeBTCJPY
 	}
@@ -134,12 +134,12 @@ func (bu *BitflyerUseCase) PostSendChildOrder(productCode, ChildOrderType, side 
 		return models.ChildOrder{}, fmt.Errorf("invalid product code: %s", productCode)
 	}
 
-	if ChildOrderType == "" {
+	if childOrderType == "" {
 		return models.ChildOrder{}, fmt.Errorf("child order type is required")
 	}
 
-	if ChildOrderType != ChildOrderTypeLimit && ChildOrderType != ChildOrderTypeMarket {
-		return models.ChildOrder{}, fmt.Errorf("invalid child order type: %s", ChildOrderType)
+	if childOrderType != ChildOrderTypeLimit && childOrderType != ChildOrderTypeMarket {
+		return models.ChildOrder{}, fmt.Errorf("invalid child order type: %s", childOrderType)
 	}
 
 	if side == "" {
@@ -150,28 +150,28 @@ func (bu *BitflyerUseCase) PostSendChildOrder(productCode, ChildOrderType, side 
 		return models.ChildOrder{}, fmt.Errorf("invalid side: %s", side)
 	}
 
-	if TimeInForce == "" {
+	if timeInForce == "" {
 		return models.ChildOrder{}, fmt.Errorf("time in force is required")
 	}
 
-	if TimeInForce != TimeInForceGTC && TimeInForce != TimeInForceIOC && TimeInForce != TimeInForceFOK {
-		return models.ChildOrder{}, fmt.Errorf("invalid time in force: %s", TimeInForce)
+	if timeInForce != TimeInForceGTC && timeInForce != TimeInForceIOC && timeInForce != TimeInForceFOK {
+		return models.ChildOrder{}, fmt.Errorf("invalid time in force: %s", timeInForce)
 	}
 
 	req := models.SendChildOrderRequest{
 		ProductCode:    productCode,
-		ChildOrderType: ChildOrderType,
+		ChildOrderType: childOrderType,
 		Side:           side,
 		Price:          price,
 		Size:           size,
-		MinuteToExpire: MinuteToExpire,
-		TimeInForce:    TimeInForce,
+		MinuteToExpire: minuteToExpire,
+		TimeInForce:    timeInForce,
 	}
 
 	return bu.PrivateAPI.PostSendChildOrder(req, isDry)
 }
 
-func (bu *BitflyerUseCase) PostCancelChildOrder(productCode, ChildOrderID string, isDry bool) error {
+func (bu *BitflyerUseCase) PostCancelChildOrder(productCode, childOrderID string, isDry bool) error {
 	if productCode == "" {
 		productCode = ProductCodeBTCJPY
 	}
@@ -179,13 +179,13 @@ func (bu *BitflyerUseCase) PostCancelChildOrder(productCode, ChildOrderID string
 		return fmt.Errorf("invalid product code: %s", productCode)
 	}
 
-	if ChildOrderID == "" {
+	if childOrderID == "" {
 		return fmt.Errorf("child order id is required")
 	}
 
 	req := models.CancelChildOrderRequest{
 		ProductCode:  productCode,
-		ChildOrderID: ChildOrderID,
+		ChildOrderID: childOrderID,
 	}
 
 	return bu.PrivateAPI.PostCancelChildOrder(req, isDry)
